@@ -50,3 +50,45 @@ def test_ollama_parses_schema_response(monkeypatch: pytest.MonkeyPatch) -> None:
 
     monkeypatch.setattr(httpx, "post", fake_post)
     assert OllamaLLM("http://x", "m").complete("p", "s", "u", Answer).value == 7
+
+
+def test_openai_compat_forced_tool_call(monkeypatch: pytest.MonkeyPatch) -> None:
+    from nobu.llm.openai_compat import OpenAICompatLLM
+
+    def fake_post(
+        url: str, json: dict[str, Any], headers: dict[str, str], timeout: float
+    ) -> httpx.Response:
+        assert url == "http://x/v1/chat/completions"
+        assert headers["Authorization"] == "Bearer k"
+        assert json["tool_choice"]["function"]["name"] == "respond"
+        msg = {"tool_calls": [{"function": {"name": "respond", "arguments": '{"value": 3}'}}]}
+        return httpx.Response(
+            200, json={"choices": [{"message": msg}]}, request=httpx.Request("POST", url)
+        )
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    assert OpenAICompatLLM("http://x/v1/", "k", "m").complete("p", "s", "u", Answer).value == 3
+
+
+def test_openai_compat_falls_back_to_fenced_json(monkeypatch: pytest.MonkeyPatch) -> None:
+    from nobu.llm.openai_compat import OpenAICompatLLM
+
+    def fake_post(url: str, **_: Any) -> httpx.Response:
+        msg = {"content": '```json\n{"value": 5}\n```'}
+        return httpx.Response(
+            200, json={"choices": [{"message": msg}]}, request=httpx.Request("POST", url)
+        )
+
+    monkeypatch.setattr(httpx, "post", fake_post)
+    assert OpenAICompatLLM("http://x", "k", "m").complete("p", "s", "u", Answer).value == 5
+
+
+def test_inline_schema_resolves_refs() -> None:
+    from nobu.llm.openai_compat import inline_schema
+
+    class Outer(BaseModel):
+        inner: Answer
+
+    out = inline_schema(Outer.model_json_schema())
+    assert "$defs" not in out
+    assert out["properties"]["inner"]["properties"]["value"]["type"] == "integer"

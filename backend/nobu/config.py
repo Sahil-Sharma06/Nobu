@@ -13,9 +13,11 @@ class Settings(BaseSettings):
 
     database_url: str = "sqlite:///./nobu.db"
 
-    llm_provider: Literal["stub", "ollama", "anthropic"] = "stub"
+    llm_provider: Literal["stub", "ollama", "anthropic", "openai_compat"] = "stub"
     llm_model: str = "llama3.1:8b"
     ollama_url: str = "http://localhost:11434"
+    llm_base_url: str = ""  # openai_compat only
+    llm_api_key: str = ""  # openai_compat only (NOBU_LLM_API_KEY)
     anthropic_api_key: str = Field(default="", validation_alias="ANTHROPIC_API_KEY")
 
     dry_run: bool = True
