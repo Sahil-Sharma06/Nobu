@@ -18,3 +18,11 @@ def test_env_overrides(monkeypatch: pytest.MonkeyPatch) -> None:
     s = Settings(_env_file=None)
     assert s.dry_run is False
     assert s.llm_model == "some-model"
+
+
+def test_data_dir_is_anchored_to_repo(monkeypatch: pytest.MonkeyPatch) -> None:
+    from nobu.config import REPO_ROOT
+
+    monkeypatch.setenv("NOBU_DATA_DIR", "../data")
+    monkeypatch.chdir(REPO_ROOT.parent)  # run from somewhere else entirely
+    assert Settings(_env_file=None).data_dir == REPO_ROOT / "data"
