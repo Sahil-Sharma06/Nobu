@@ -1,0 +1,19 @@
+# Only Postgres runs in Docker; backend and frontend run natively (see README).
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: nobu
+      POSTGRES_PASSWORD: nobu
+      POSTGRES_DB: nobu
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - nobu_pg:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U nobu"]
+      interval: 5s
+      retries: 10
+
+volumes:
+  nobu_pg:
