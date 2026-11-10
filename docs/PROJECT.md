@@ -156,7 +156,7 @@ Chosen to match the author's existing skills.
 
 ### 8.1 Project location and layout
 
-- Claude Code runs from the author's **Desktop directory**. The whole project lives in a new folder named **Nobu** inside it (for example `~/Desktop/Nobu` on macOS/Linux, or `C:\Users\<name>\Desktop\Nobu` on Windows).
+- Development happens from the author's **Desktop directory**. The whole project lives in a new folder named **Nobu** inside it (for example `~/Desktop/Nobu` on macOS/Linux, or `C:\Users\<name>\Desktop\Nobu` on Windows).
 - Everything for the project (code, docs, config, Docker files, tests) stays inside the `Nobu` folder. Nothing is created elsewhere on the Desktop.
 - This specification is kept at `Nobu/docs/PROJECT.md`.
 - `Nobu` is its own git repository (`git init` inside the folder). Suggested top-level layout: `backend/`, `frontend/`, `docs/`, `docker-compose.yml`, `.env.example`, `README.md`.
