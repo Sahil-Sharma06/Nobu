@@ -1,0 +1,17 @@
+# secrets
+.env
+*.pem
+# user data (resume, uploads)
+data/
+# python
+__pycache__/
+*.pyc
+.venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+*.db
+# node
+node_modules/
+dist/
