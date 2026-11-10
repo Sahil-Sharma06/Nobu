@@ -26,7 +26,10 @@ class StubLLM:
     def complete(self, prompt_name: str, system: str, user: str, schema: type[T]) -> T:
         self.calls.append((prompt_name, system, user))
         if prompt_name not in self.responses:
-            raise LLMError(f"StubLLM has no response registered for {prompt_name!r}")
+            raise LLMError(
+                f"stub LLM has no answer for {prompt_name!r}. "
+                "Set NOBU_LLM_PROVIDER (e.g. openai_compat) in .env to use a real model."
+            )
         r = self.responses[prompt_name]
         data = r(user) if callable(r) else r
         return schema.model_validate(data)
