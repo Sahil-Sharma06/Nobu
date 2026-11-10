@@ -5,7 +5,7 @@ from nobu.config import Settings
 
 def test_dry_run_is_default(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("NOBU_DRY_RUN", raising=False)
-    s = Settings(_env_file=None)  # type: ignore[call-arg]
+    s = Settings(_env_file=None)
     assert s.dry_run is True
     assert s.daily_cap == 15
     assert s.dedupe_days == 60
@@ -15,6 +15,6 @@ def test_dry_run_is_default(monkeypatch: pytest.MonkeyPatch) -> None:
 def test_env_overrides(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("NOBU_DRY_RUN", "false")
     monkeypatch.setenv("NOBU_LLM_MODEL", "some-model")
-    s = Settings(_env_file=None)  # type: ignore[call-arg]
+    s = Settings(_env_file=None)
     assert s.dry_run is False
     assert s.llm_model == "some-model"
